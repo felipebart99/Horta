@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import axios from "axios";
 
 export default function SensorScreen() {
   const [humidity, setHumidity] = useState(40); // Exemplo de umidade inicial
@@ -7,9 +8,9 @@ export default function SensorScreen() {
 
   // Função para determinar a cor baseada na umidade
   const getHumidityColor = (value) => {
-    if (value >= 60) {
+    if (value >= 400) {
       return "#4BF113";
-    } else if (value >= 40) {
+    } else if (value >= 293) {
       return "#F0FF1F";
     } else {
       return "#FC0909";
@@ -18,14 +19,36 @@ export default function SensorScreen() {
 
   // Atualiza a imagem baseada na umidade, mas só quando o valor da umidade mudar
   useEffect(() => {
-    if (humidity >= 60) {
+    if (humidity >= 400) {
       setImgUri(require("../img/nature-8658421_1280.png"));
-    } else if (humidity >= 40) {
+    } else if (humidity >= 293) {
       setImgUri(require("../img/Árvore.png"));
     } else {
       setImgUri(require("../img/Árvore 2 (1).png"));
     }
-  }, [humidity]); // O `useEffect` só será executado quando `humidity` mudar
+  }, [humidity]); // O useEffect só será executado quando humidity mudar
+
+  // Função para buscar a umidade do servidor
+  const fetchHumidity = async () => {
+    try {
+      const response = await axios.get("http://192.168.1.12:3000/humidity");
+      setHumidity(response.data.humidity); // Supondo que o JSON retornado seja { "humidity": value }
+    } catch (error) {
+      console.error("Erro ao buscar a umidade:", error);
+    }
+  };
+
+  // Faz a chamada para buscar a umidade de 1 em 1 segundos
+  useEffect(() => {
+    // Busca a umidade imediatamente
+    fetchHumidity();
+
+    // Configura o intervalo para buscar a umidade a cada 1 segundos (1000 milissegundos)
+    const intervalId = setInterval(fetchHumidity, 1000);
+
+    // Limpa o intervalo quando o componente for desmontado
+    return () => clearInterval(intervalId);
+  }, []); // O useEffect será executado uma vez ao montar o componente
 
   return (
     <View style={styles.container}>
