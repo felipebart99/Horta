@@ -9,22 +9,22 @@ export default function SensorScreen() {
   // Função para determinar a cor baseada na umidade
   const getHumidityColor = (value) => {
     if (value >= 400) {
-      return "#4BF113";
-    } else if (value >= 293) {
-      return "#F0FF1F";
-    } else {
       return "#FC0909";
+    } else if (value >= 293) {
+      return "#4BF113";
+    } else {
+      return "#F0FF1F";
     }
   };
 
   // Atualiza a imagem baseada na umidade, mas só quando o valor da umidade mudar
   useEffect(() => {
     if (humidity >= 400) {
-      setImgUri(require("../img/nature-8658421_1280.png"));
-    } else if (humidity >= 293) {
-      setImgUri(require("../img/Árvore.png"));
-    } else {
       setImgUri(require("../img/Árvore 2 (1).png"));
+    } else if (humidity >= 293) {
+      setImgUri(require("../img/nature-8658421_1280.png"));
+    } else {
+      setImgUri(require("../img/Árvore.png"));
     }
   }, [humidity]); // O useEffect só será executado quando humidity mudar
 
@@ -72,13 +72,13 @@ export default function SensorScreen() {
             <View
               style={[styles.statusSquare, { backgroundColor: "#F0FF1F" }]}
             />
-            <Text style={styles.statusText}>Baixa</Text>
+            <Text style={styles.statusText}>Alta</Text>
           </View>
           <View style={styles.statusItem}>
             <View
               style={[styles.statusSquare, { backgroundColor: "#FC0909" }]}
             />
-            <Text style={styles.statusText}>Muito Baixa</Text>
+            <Text style={styles.statusText}>Baixa</Text>
           </View>
         </View>
 
